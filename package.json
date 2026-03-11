@@ -1,0 +1,19 @@
+{
+  "name": "issue-tracker-test-app-e2e-tests",
+  "version": "1.0.0",
+  "description": "A hands-on course for QA engineers learning to write Playwright end-to-end tests using AI coding assistants (Claude).",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:ui": "npx playwright test --ui",
+    "test:headed": "npx playwright test --headed",
+    "test:report": "npx playwright show-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "typescript": "^5.9.3"
+  }
+}
