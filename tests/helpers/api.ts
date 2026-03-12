@@ -84,6 +84,18 @@ export async function createTask(
   return response.json();
 }
 
+export async function updateTask(
+  request: APIRequestContext,
+  taskId: string,
+  params: Partial<CreateTaskParams>
+) {
+  const response = await request.patch(`${API_BASE}/tasks/${taskId}`, {
+    data: params,
+  });
+  await assertOk(response, `updateTask(${taskId})`);
+  return response.json();
+}
+
 export async function deleteTask(
   request: APIRequestContext,
   taskId: string
