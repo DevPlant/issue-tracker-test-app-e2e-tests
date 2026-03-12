@@ -1,5 +1,5 @@
 // ABOUTME: Playwright configuration for end-to-end tests against the issue tracker app.
-// ABOUTME: Defines browser settings, timeouts, reporters, and base URL.
+// ABOUTME: Defines browser settings, timeouts, reporters, auth setup project, and base URL.
 
 import { defineConfig, devices } from "@playwright/test";
 
@@ -21,8 +21,17 @@ export default defineConfig({
   },
   projects: [
     {
+      name: "setup",
+      testMatch: /auth\.setup\.ts/,
+    },
+    {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: ".auth/alice.json",
+      },
+      dependencies: ["setup"],
+      testIgnore: /auth\.setup\.ts/,
     },
   ],
 });

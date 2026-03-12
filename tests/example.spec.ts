@@ -1,14 +1,11 @@
-// ABOUTME: Placeholder test that verifies the app's login page loads correctly.
-// ABOUTME: Confirms the Playwright setup is working end-to-end.
+// ABOUTME: Smoke test that verifies the auth setup works correctly.
+// ABOUTME: Confirms an authenticated user (Alice) is redirected to the projects page.
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./helpers/fixtures";
 
-test("login page loads and shows sign-in form", async ({ page }) => {
-  await page.goto("/login");
+test("authenticated user sees the projects page", async ({ page }) => {
+  await page.goto("/");
 
-  const form = page.locator("form");
-  await expect(form).toBeVisible();
-
-  await expect(page.getByLabel(/email/i)).toBeVisible();
-  await expect(page.getByLabel(/password/i)).toBeVisible();
+  await expect(page).toHaveURL(/\/projects/);
+  await expect(page.getByTestId("projects-page")).toBeVisible();
 });
