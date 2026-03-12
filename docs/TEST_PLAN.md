@@ -301,4 +301,4 @@ The following API operations are recommended for building reusable test fixtures
 | Delete task | DELETE | `/api/v1/tasks/{id}` | |
 | Add comment | POST | `/api/v1/tasks/{id}/comments` | `body` |
 
-**Authentication note:** The app uses cookie-based sessions via a cookie named `better-auth.session_token`. Playwright's `request` context can handle cookie management automatically when using the same browser context as the UI tests.
+**Authentication note:** The app uses cookie-based sessions via a cookie named `__Secure-better-auth.session_token` (the `__Secure-` prefix is applied because the app runs over HTTPS). Playwright's `request` context can handle cookie management automatically when using the same browser context as the UI tests.

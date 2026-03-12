@@ -11,7 +11,7 @@ I have a Playwright E2E testing project set up for an issue tracker app. Now I n
 ### Context
 
 - **App URL**: https://issues-demo.devplant.academy
-- **Auth mechanism**: Email/password login with cookie-based sessions (cookie: `better-auth.session_token`)
+- **Auth mechanism**: Email/password login with cookie-based sessions (cookie: `__Secure-better-auth.session_token` — note the `__Secure-` prefix, which the app uses because it runs over HTTPS)
 - **Test accounts** (all use password `password123`):
   - `admin@example.com` (admin role)
   - `alice@example.com` (regular user)
