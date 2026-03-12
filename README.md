@@ -28,8 +28,10 @@ Each checkpoint has a tag pair: `cpNN-*-prompt` (before) and `cpNN-*-done` (afte
 | 02 | **Explore the App** | Using AI to analyze an app spec and create a test plan |
 | 03 | **Auth & Reusable Helpers** | Scaffolding auth fixtures, storage state, and shared utilities |
 | 04 | **Smoke Tests** | Writing quick happy-path tests for core flows |
-| 05 | **CRUD Tests** | Detailed tests for tasks, comments, and project settings |
-| 06 | **Advanced Scenarios** | Admin panel, filters, search, and cross-user interactions |
+| 05 | **Task Tests** | Task lifecycle: create, edit, status changes, delete |
+| 06 | **Comment Tests** | Comment CRUD and cross-user permission checks |
+| 07 | **Project Settings Tests** | Project editing, member management, project deletion |
+| 08 | **Advanced Scenarios** | Admin panel, filters, search, and multi-user interactions |
 
 ## How to use
 
