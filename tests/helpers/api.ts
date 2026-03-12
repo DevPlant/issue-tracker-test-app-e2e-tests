@@ -1,7 +1,7 @@
 // ABOUTME: REST API helper functions for test data setup and teardown.
 // ABOUTME: Each function uses Playwright's APIRequestContext and targets /api/v1 endpoints.
 
-import { APIRequestContext } from "@playwright/test";
+import { APIRequestContext, APIResponse } from "@playwright/test";
 import { API_BASE } from "./constants";
 
 interface CreateProjectParams {
@@ -19,10 +19,7 @@ interface CreateTaskParams {
   dueDate?: string;
 }
 
-async function assertOk(
-  response: { ok(): boolean; status(): number; text(): Promise<string> },
-  context: string
-) {
+async function assertOk(response: APIResponse, context: string) {
   if (!response.ok()) {
     const body = await response.text();
     throw new Error(
@@ -72,9 +69,9 @@ export async function createTask(
     title: params.title,
     status: params.status ?? "todo",
     priority: params.priority ?? "medium",
-    ...(params.assigneeId && { assigneeId: params.assigneeId }),
-    ...(params.description && { description: params.description }),
-    ...(params.dueDate && { dueDate: params.dueDate }),
+    ...(params.assigneeId !== undefined && { assigneeId: params.assigneeId }),
+    ...(params.description !== undefined && { description: params.description }),
+    ...(params.dueDate !== undefined && { dueDate: params.dueDate }),
   };
   const response = await request.post(
     `${API_BASE}/projects/${projectId}/tasks`,

@@ -2,7 +2,7 @@
 // ABOUTME: Extends base test with reusable fixtures; tests import { test, expect } from here.
 
 import { test as base, expect, APIRequestContext } from "@playwright/test";
-import { TEST_ACCOUNTS, BASE_URL } from "./constants";
+import { TEST_ACCOUNTS } from "./constants";
 import { createProject, deleteProject } from "./api";
 
 interface TestProject {
@@ -17,9 +17,9 @@ type TestFixtures = {
 };
 
 export const test = base.extend<TestFixtures>({
-  aliceApi: async ({ playwright }, use) => {
+  aliceApi: async ({ playwright, baseURL }, use) => {
     const context = await playwright.request.newContext({
-      baseURL: BASE_URL,
+      baseURL: baseURL!,
       storageState: TEST_ACCOUNTS.alice.storageStatePath,
     });
     await use(context);
@@ -27,10 +27,10 @@ export const test = base.extend<TestFixtures>({
   },
 
   testProject: async ({ aliceApi }, use) => {
-    const timestamp = Date.now();
-    const key = `T${String(timestamp).slice(-4)}`;
+    const suffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const key = `T${suffix}`;
     const project = await createProject(aliceApi, {
-      name: `Test Project ${timestamp}`,
+      name: `Test Project ${Date.now()}`,
       key,
     });
 

@@ -7,7 +7,7 @@ import { TEST_ACCOUNTS, TestAccountKey } from "./helpers/constants";
 for (const [key, account] of Object.entries(TEST_ACCOUNTS)) {
   setup(`authenticate as ${key}`, async ({ page }) => {
     await page.goto("/login");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
 
     await page.getByTestId("login-email-input").fill(account.email);
     await page.getByTestId("login-password-input").fill(account.password);

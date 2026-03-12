@@ -1,12 +1,7 @@
 // ABOUTME: Shared constants for test accounts, URLs, and commonly-needed values.
 // ABOUTME: Provides typed test account credentials and app configuration.
 
-export const BASE_URL =
-  process.env.BASE_URL || "https://issues-demo.devplant.academy";
-
 export const API_BASE = "/api/v1";
-
-export type TestAccountKey = "admin" | "alice" | "bob";
 
 export interface TestAccount {
   email: string;
@@ -16,7 +11,7 @@ export interface TestAccount {
   storageStatePath: string;
 }
 
-export const TEST_ACCOUNTS: Record<TestAccountKey, TestAccount> = {
+export const TEST_ACCOUNTS = {
   admin: {
     email: "admin@example.com",
     password: "password123",
@@ -38,4 +33,6 @@ export const TEST_ACCOUNTS: Record<TestAccountKey, TestAccount> = {
     displayName: "Bob",
     storageStatePath: ".auth/bob.json",
   },
-};
+} as const satisfies Record<string, TestAccount>;
+
+export type TestAccountKey = keyof typeof TEST_ACCOUNTS;
