@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E2E Testing with AI — DevPlant Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Overpass+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green-700: #388E3C;
+      --green-600: #43A047;
+      --green-500: #4CAF50;
+      --green-100: #C8E6C9;
+      --green-50: #E8F5E9;
+      --sidebar-dark: #212121;
+      --sidebar-accent: #2B2930;
+      --fg: #1a1a1a;
+      --fg-muted: #666;
+      --bg: #fafafa;
+      --card: #fff;
+      --border: #e0e0e0;
+      --radius: 10px;
+      --mono: 'Overpass Mono', monospace;
+      --sans: 'Open Sans', system-ui, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--sans);
+      color: var(--fg);
+      background: var(--bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Layout */
+    .page { display: flex; min-height: 100vh; }
+
+    /* Sidebar nav */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 260px;
+      min-width: 260px;
+      background: var(--sidebar-dark);
+      color: #e0e0e0;
+      padding: 2rem 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-brand {
+      padding: 0 1.5rem 1.5rem;
+      border-bottom: 1px solid #424242;
+      margin-bottom: 1rem;
+    }
+
+    .sidebar-brand h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+
+    .sidebar-brand span {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: #66bb6a;
+    }
+
+    .sidebar nav { flex: 1; }
+
+    .sidebar a {
+      display: block;
+      padding: 0.5rem 1.5rem;
+      color: #bbb;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: all 0.15s;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar a:hover {
+      color: #fff;
+      background: var(--sidebar-accent);
+      border-left-color: #66bb6a;
+    }
+
+    .sidebar a.section-head {
+      color: #888;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding-top: 1.25rem;
+      pointer-events: none;
+    }
+
+    /* Main content */
+    .main {
+      flex: 1;
+      max-width: 820px;
+      padding: 3rem 3rem 6rem;
+    }
+
+    /* Hero */
+    .hero {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--green-700);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--fg-muted);
+      max-width: 600px;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      background: var(--green-50);
+      color: var(--green-700);
+      border: 1px solid var(--green-100);
+    }
+
+    .badge.dark {
+      background: var(--sidebar-dark);
+      color: #66bb6a;
+      border-color: #424242;
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    p { margin-bottom: 0.75rem; }
+
+    p.muted {
+      color: var(--fg-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Overview table */
+    .overview-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .overview-table th {
+      text-align: left;
+      padding: 0.6rem 1rem;
+      background: var(--green-50);
+      color: var(--green-700);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 2px solid var(--green-100);
+    }
+
+    .overview-table td {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .overview-table tr:last-child td { border-bottom: none; }
+
+    .overview-table .cp-num {
+      font-family: var(--mono);
+      font-weight: 600;
+      color: var(--green-700);
+    }
+
+    .test-count {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+    }
+
+    /* Checkpoint cards */
+    .checkpoint {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+
+    .checkpoint-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+    }
+
+    .cp-badge {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--green-700);
+      color: #fff;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .checkpoint-header h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .checkpoint-meta {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--fg-muted);
+    }
+
+    .checkpoint-body {
+      padding: 0 1.25rem 1rem;
+      font-size: 0.9rem;
+      color: var(--fg-muted);
+    }
+
+    .checkpoint-body p { margin-bottom: 0.5rem; }
+
+    /* Collapsible prompt */
+    details {
+      margin-top: 0.75rem;
+    }
+
+    details summary {
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--green-700);
+      padding: 0.4rem 0;
+      user-select: none;
+    }
+
+    details summary:hover { color: var(--green-600); }
+
+    details[open] summary { margin-bottom: 0.5rem; }
+
+    .prompt-content {
+      background: #f5f5f5;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      font-family: var(--mono);
+      color: #333;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    /* Results banner */
+    .results-banner {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--green-50);
+      border: 1px solid var(--green-100);
+      border-radius: var(--radius);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .results-banner .result-icon {
+      font-size: 1.5rem;
+      width: 40px;
+      height: 40px;
+      background: var(--green-700);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .results-banner .result-text h3 {
+      font-size: 1rem;
+      color: var(--green-700);
+      margin: 0;
+    }
+
+    .results-banner .result-text p {
+      font-size: 0.85rem;
+      color: var(--fg-muted);
+      margin: 0;
+    }
+
+    /* Info box */
+    .info-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--green-700);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .info-box h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .info-box p {
+      font-size: 0.88rem;
+      color: var(--fg-muted);
+      margin: 0;
+    }
+
+    .info-box code {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      background: #f0f0f0;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    /* Code blocks */
+    pre {
+      background: var(--sidebar-dark);
+      color: #e0e0e0;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin-bottom: 1rem;
+    }
+
+    pre .comment { color: #888; }
+    pre .string { color: #66bb6a; }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+    }
+
+    /* Account table */
+    .account-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .account-table th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      font-weight: 600;
+      border-bottom: 2px solid var(--border);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--fg-muted);
+    }
+
+    .account-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .account-table td code {
+      font-size: 0.82rem;
+    }
+
+    .role-badge {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .role-badge.admin {
+      background: #FFF3E0;
+      color: #E65100;
+    }
+
+    .role-badge.user {
+      background: var(--green-50);
+      color: var(--green-700);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: #999;
+    }
+
+    footer a {
+      color: var(--green-700);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { padding: 2rem 1.5rem 4rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+          <svg height="32" width="32" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" fill-rule="evenodd" stroke="none" stroke-width="1">
+              <path d="M38.32,26.64c-.91.75-1.04,2.09-.3,3 .75.92,2.11,1.06,3.03.31l.09-.07c.16-.13,2.02-1.61,2.36-4.69-3.05-.28-4.89,1.19-5.11,1.37l-.08.07zM39.7,32.41c-1.2,0-2.4-.52-3.21-1.52-1.44-1.76-1.17-4.36.59-5.8l.04-.03c.55-.46,3.28-2.52,7.63-1.69l.82.16-.01.83c-.07,4.74-3.1,7.03-3.23,7.12l-.01.01c-.77.62-1.69.92-2.61.92z" fill="#fff"/>
+              <path d="M31.12,35.4l-1.93-.47c1.32-5.38.52-13.19-1.84-18.18l1.8-.85c2.54,5.35,3.39,13.73,1.97,19.5" fill="#fff"/>
+              <path d="M23.99,5.15c-2.49,4.41-2.43,11.73.22,16.49 1.09,1.96,3.07,4.25,6.33,4.25.04,0,.07,0,.11,0,3.07-1.37,3.71-4.01,3.7-6 -.02-4.9-4.16-11.81-10.36-14.74M30.55,27.88c-3.31,0-6.16-1.86-8.07-5.27-3.18-5.7-3.04-14.34.3-19.26l.45-.67.75.3c6.78,2.77,12.32,10.35,12.36,16.91.02,3.72-1.78,6.53-5.08,7.91l-.17.07-.18.01c-.12,0-.24,0-.36,0" fill="#fff"/>
+              <polygon fill="#fff" points="56.98,57.67 46.05,57.67 46.05,55.69 54.99,55.69 54.99,10.11 46.05,10.11 46.05,8.12 56.98,8.12"/>
+              <polygon fill="#fff" points="15.39,57.67 4.46,57.67 4.46,8.12 15.39,8.12 15.39,10.11 6.45,10.11 6.45,55.69 15.39,55.69"/>
+              <polygon fill="#fff" points="18.1,36.45 45.82,36.45 45.82,34.47 18.1,34.47"/>
+              <polygon fill="#66BB6A" points="18.1,41.82 38.38,41.82 38.38,39.84 18.1,39.84"/>
+              <polygon fill="#fff" points="19.93,47.2 32.42,47.2 32.42,45.22 19.93,45.22"/>
+              <polygon fill="#fff" points="19.93,52.57 38.38,52.57 38.38,50.59 19.93,50.59"/>
+            </g>
+          </svg>
+          <h2>DevPlant Academy</h2>
+        </div>
+        <span>E2E Testing with AI</span>
+      </div>
+      <nav>
+        <a href="#overview">Overview</a>
+        <a href="#results">Test Results</a>
+        <a href="#accounts">Test Accounts</a>
+        <a class="section-head">Checkpoints</a>
+        <a href="#cp01">01 — Project Setup</a>
+        <a href="#cp02">02 — Explore & Plan</a>
+        <a href="#cp03">03 — Auth & Helpers</a>
+        <a href="#cp04">04 — Smoke Tests</a>
+        <a href="#cp05">05 — Task Lifecycle</a>
+        <a href="#cp06">06 — Comments</a>
+        <a href="#cp07">07 — Project Settings</a>
+        <a href="#cp08">08 — Advanced</a>
+        <a class="section-head">Concepts</a>
+        <a href="#ai-exploration">AI App Exploration</a>
+        <a href="#prompt-craft">Prompt Craft</a>
+        <a href="#isolation">Test Isolation</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+
+      <!-- Hero -->
+      <header class="hero" id="overview">
+        <h1>E2E Testing with AI</h1>
+        <p>A checkpoint-based course for QA engineers learning to write Playwright tests using AI coding assistants.</p>
+        <div class="badge-row">
+          <span class="badge">Playwright</span>
+          <span class="badge">TypeScript</span>
+          <span class="badge dark">Claude Code</span>
+          <span class="badge dark">Copilot CLI</span>
+          <span class="badge">8 Checkpoints</span>
+          <span class="badge">36 Tests</span>
+        </div>
+      </header>
+
+      <!-- What this is -->
+      <section>
+        <h2>What is this?</h2>
+        <p>This repository is a guided tutorial. Each checkpoint contains a <strong>prompt</strong> you feed to an AI coding assistant (Claude, GitHub Copilot, OpenAI Codex, etc.) and a <strong>reference implementation</strong> showing what the AI produces.</p>
+        <p>The application under test is <a href="https://issues-demo.devplant.academy" target="_blank" style="color: var(--green-700);">Issue Tracker</a> — a Jira-like project management app with Kanban boards, task management, comments, and an admin panel.</p>
+        <p class="muted">You practice by running the prompts yourself, then compare your output against the reference. Differences are expected — AI output varies between runs.</p>
+      </section>
+
+      <!-- How to use -->
+      <section>
+        <h2>Getting Started</h2>
+        <div class="info-box">
+          <h3>Start from scratch</h3>
+          <p>Clone the repo and open <code>checkpoints/01-setup/PROMPT.md</code>. Copy the prompt into your AI assistant.</p>
+        </div>
+        <div class="info-box">
+          <h3>Jump to a checkpoint</h3>
+          <p>Each checkpoint has git tags: <code>cpNN-*-prompt</code> (before) and <code>cpNN-*-done</code> (after). Use <code>git checkout cp03-auth-prompt</code> to start from checkpoint 3.</p>
+        </div>
+        <div class="info-box">
+          <h3>Compare your work</h3>
+          <p>Run <code>git diff cp04-smoke-prompt..cp04-smoke-done</code> to see what the reference implementation changed.</p>
+        </div>
+      </section>
+
+      <!-- Test Results -->
+      <section id="results">
+        <h2>Test Results</h2>
+        <div class="results-banner">
+          <div class="result-icon">✓</div>
+          <div class="result-text">
+            <h3>36 tests passing</h3>
+            <p>All checkpoints complete. Full suite runs in ~90 seconds against the live app.</p>
+          </div>
+        </div>
+        <table class="overview-table">
+          <thead>
+            <tr>
+              <th>CP</th>
+              <th>Checkpoint</th>
+              <th>Tests</th>
+              <th>What it covers</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cp-num">01</td>
+              <td>Project Setup</td>
+              <td class="test-count">1</td>
+              <td>Playwright config, folder structure, placeholder test</td>
+            </tr>
+            <tr>
+              <td class="cp-num">02</td>
+              <td>Explore & Plan</td>
+              <td class="test-count">—</td>
+              <td>App analysis, 88-case test plan with priorities</td>
+            </tr>
+            <tr>
+              <td class="cp-num">03</td>
+              <td>Auth & Helpers</td>
+              <td class="test-count">1</td>
+              <td>Storage state auth, API helpers, custom fixtures</td>
+            </tr>
+            <tr>
+              <td class="cp-num">04</td>
+              <td>Smoke Tests</td>
+              <td class="test-count">6</td>
+              <td>Login, project creation, task CRUD, comments, search</td>
+            </tr>
+            <tr>
+              <td class="cp-num">05</td>
+              <td>Task Lifecycle</td>
+              <td class="test-count">9</td>
+              <td>Create, edit, status, priority, assignee, due date, delete, list view</td>
+            </tr>
+            <tr>
+              <td class="cp-num">06</td>
+              <td>Comments</td>
+              <td class="test-count">5</td>
+              <td>Add, edit, cancel, delete, cross-user permissions</td>
+            </tr>
+            <tr>
+              <td class="cp-num">07</td>
+              <td>Project Settings</td>
+              <td class="test-count">6</td>
+              <td>Edit details, member management, project deletion</td>
+            </tr>
+            <tr>
+              <td class="cp-num">08</td>
+              <td>Advanced</td>
+              <td class="test-count">6</td>
+              <td>Admin panel, board filters, user profile, multi-user</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Test accounts -->
+      <section id="accounts">
+        <h2>Test Accounts</h2>
+        <p class="muted">All accounts use password: <code>password123</code></p>
+        <table class="account-table">
+          <thead>
+            <tr><th>Name</th><th>Email</th><th>Role</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Admin User</td>
+              <td><code>admin@example.com</code></td>
+              <td><span class="role-badge admin">admin</span></td>
+            </tr>
+            <tr>
+              <td>Alice</td>
+              <td><code>alice@example.com</code></td>
+              <td><span class="role-badge user">user</span></td>
+            </tr>
+            <tr>
+              <td>Bob</td>
+              <td><code>bob@example.com</code></td>
+              <td><span class="role-badge user">user</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Checkpoints -->
+      <section>
+        <h2>Checkpoints</h2>
+
+        <!-- CP01 -->
+        <div class="checkpoint" id="cp01">
+          <div class="checkpoint-header">
+            <span class="cp-badge">CP 01</span>
+            <h3>Project Setup</h3>
+            <span class="checkpoint-meta">1 test</span>
+          </div>
+          <div class="checkpoint-body">
+            <p>Initialize a Playwright E2E project from scratch — <code>package.json</code>, <code>playwright.config.ts</code>, TypeScript config, folder structure, and a placeholder test that verifies the login page loads.</p>
+            <details>
+              <summary>View prompt →</summary>
+              <div class="prompt-content">I need you to set up a Playwright end-to-end testing project from scratch. This project will contain E2E tests for a web application that is already deployed and running.
+
+### About the application under test
+
+- **URL**: https://issues-demo.devplant.academy
+- **What it is**: A Jira-like issue tracker with projects, Kanban boards, task management, comments, and an admin panel
+- **Auth**: Email/password login with cookie-based sessions
+- **Tech**: It's a Next.js app, but that doesn't matter for our tests — we're testing it as a black box through the browser
+
+### What I need you to set up
+
+**Package &amp; dependencies:**
+- Initialize a new Node.js project with `package.json`
+- Install Playwright with `@playwright/test` and install browsers
+- Use TypeScript for all test files
+- Add a `tsconfig.json` appropriate for a Playwright project
+
+**Playwright configuration (`playwright.config.ts`):**
+- Base URL: `https://issues-demo.devplant.academy`
+- Only use Chromium (we don't need cross-browser testing for this course)
+- Reasonable timeouts: 30s for tests, 10s for actions/navigation
+- Take a screenshot on failure
+- HTML reporter for viewing results locally
+- Retain test traces on failure (for debugging)
+- Run tests sequentially for now (workers: 1) — we'll deal with parallelism later
+
+**Folder structure:**
+- `tests/` — where test files will go
+- `tests/helpers/` — for shared utilities and helpers
+- Create a placeholder test file `tests/example.spec.ts` with a single simple test that verifies the app's login page loads (navigate to `/login` and check that the page contains a sign-in form). This confirms the setup works.
+
+**Scripts in package.json:**
+- `test` — run all tests
+- `test:ui` — run tests with Playwright UI mode
+- `test:headed` — run tests in headed mode (visible browser)
+- `test:report` — open the HTML report
+
+**Other:**
+- Add a `.gitignore` to exclude `node_modules/`, `test-results/`, `playwright-report/`, `.env` files, and any Playwright state directories
+- Do NOT set up authentication helpers yet — that comes in a later checkpoint
+
+After setup, run the placeholder test to verify everything works.</div>
+            </details>
+          </div>
+        </div>
+
+        <!-- CP02 -->
+        <div class="checkpoint" id="cp02">
+          <div class="checkpoint-header">
+            <span class="cp-badge">CP 02</span>
+            <h3>Explore the App & Create a Test Plan</h3>
+            <span class="checkpoint-meta">planning</span>
+          </div>
+          <div class="checkpoint-body">
+            <p>Study the application spec and OpenAPI docs, then produce a structured test plan with 80+ test cases organized by feature area, priorities (P0/P1/P2), <code>data-testid</code> references, and critical path identification.</p>
+            <details>
+              <summary>View prompt →</summary>
+              <div class="prompt-content">I'm setting up E2E tests for an issue tracker web application. Before writing any tests, I need you to study the application thoroughly and produce a structured test plan.
+
+### Application docs
+
+The following documents describe the application in detail:
+
+- `docs/APP_SPEC.md` — Full feature specification with UI behavior, page routes, and `data-testid` selectors
+- `docs/openapi.json` — OpenAPI spec for the REST API (base path: `/api/v1`)
+
+Please read both files carefully.
+
+### About the application
+
+- **Live URL**: https://issues-demo.devplant.academy
+- **API docs**: https://issues-demo.devplant.academy/api/docs
+- **Test accounts** (all use password `password123`):
+  - `admin@example.com` (admin role)
+  - `alice@example.com` (regular user)
+  - `bob@example.com` (regular user)
+
+### What I need you to produce
+
+Create a file `docs/TEST_PLAN.md` with a structured test plan. Organize it as follows:
+
+**1. Test areas** — Group tests by feature area matching the app spec sections:
+   - Authentication (login, registration, session)
+   - Projects (list, create, navigation)
+   - Kanban Board (columns, drag-and-drop, task cards, context menu)
+   - Task List View (table, sorting, filtering)
+   - Task Detail (view, inline editing, sidebar fields)
+   - Comments (add, edit, delete)
+   - Project Settings (edit details, manage members, delete project)
+   - User Profile (profile info, notifications, password change)
+   - Admin Panel (user list, role changes, bulk operations)
+   - Global Search (Cmd+K, search results, navigation)
+
+**2. For each test area**, list specific test cases with:
+   - A short descriptive name (this will become the test title)
+   - Priority: **P0** (critical path — must never break), **P1** (important functionality), or **P2** (edge cases and nice-to-haves)
+   - Any relevant `data-testid` selectors from the spec
+   - Notes on test data setup needed
+
+**3. Test data strategy** — Document what test data the tests will need:
+   - Which test accounts to use and for what purpose
+   - Whether tests should create their own data or rely on seeded data
+   - How to handle cleanup between tests
+   - Recommend using unique names with timestamps to avoid collisions
+
+**4. Critical paths** — Identify the top 5-8 user journeys that are most important to test (these become our smoke tests in a later checkpoint).
+
+### Guidelines
+
+- Be thorough but practical. Focus on what's testable through the UI.
+- Don't plan tests for things that are purely visual (animations, exact colors) unless they indicate state.
+- Drag-and-drop testing with Playwright is tricky — note it as a test case but flag it as potentially complex.
+- For the API, we won't write separate API tests. But note where API calls might be useful for test setup.
+- The app uses `data-testid` attributes extensively — prefer these for selectors.</div>
+            </details>
+          </div>
+        </div>
+
+        <!-- CP03 -->
+        <div class="checkpoint" id="cp03">
+          <div class="checkpoint-header">
+            <span class="cp-badge">CP 03</span>
+            <h3>Auth & Reusable Helpers</h3>
+            <span class="checkpoint-meta">1 test</span>
+          </div>
+          <div class="checkpoint-body">
+            <p>Scaffold authentication infrastructure — storage state setup for 3 accounts, API helpers for test data management, custom Playwright fixtures with auto-cleanup, and the setup project pattern.</p>
+            <details>
+              <summary>View prompt →</summary>
+              <div class="prompt-content">I have a Playwright E2E testing project set up for an issue tracker app. Now I need to scaffold the authentication infrastructure and reusable test helpers.
+
+### Context
+
+- **App URL**: https://issues-demo.devplant.academy
+- **Auth mechanism**: Email/password login with cookie-based sessions
+- **Test accounts** (all use password `password123`):
+  - `admin@example.com` (admin role)
+  - `alice@example.com` (regular user)
+  - `bob@example.com` (regular user)
+- **API base**: `/api/v1` — supports REST endpoints for projects, tasks, comments (see `docs/openapi.json`)
+- **Test selectors**: The app uses `data-testid` attributes — see `docs/APP_SPEC.md`
+
+### What I need
+
+#### 1. Auth storage state setup
+
+Create a Playwright global setup that:
+- Logs in as each test account (admin, alice, bob) via the UI
+- Saves each session's storage state to separate files (`.auth/admin.json`, `.auth/alice.json`, `.auth/bob.json`)
+- Add `.auth/` to `.gitignore`
+
+Update `playwright.config.ts` to:
+- Run the auth setup as a dependency project (Playwright's `setup` project pattern)
+- Create test projects that depend on the setup (default project using Alice's session)
+- Keep Chromium-only, sequential execution
+
+#### 2. Test constants
+
+Create `tests/helpers/constants.ts` with:
+- Test account credentials (email, password, role, display name) as a typed object
+- Any other commonly-needed constants
+
+#### 3. API helpers
+
+Create `tests/helpers/api.ts` with helper functions for test data setup via REST API:
+- `createProject(request, { name, key, description })`
+- `deleteProject(request, projectId)`
+- `addProjectMember(request, projectId, email)`
+- `createTask(request, projectId, { title, status?, priority?, assigneeId?, description?, dueDate? })`
+- `deleteTask(request, taskId)`
+- `addComment(request, taskId, body)`
+
+Each helper should accept `APIRequestContext`, use `/api/v1/`, throw descriptive errors on failure.
+
+#### 4. Test fixtures
+
+Create `tests/helpers/fixtures.ts` that extends Playwright's `test` with:
+- `aliceApi` — authenticated `APIRequestContext` for Alice
+- `testProject` — creates a project with unique name and cleans up after
+- Export `test` and `expect`
+
+#### 5. Update the example test
+
+Update `tests/example.spec.ts` to use the new auth infrastructure. Verify authenticated user lands on `/projects`.
+
+After making all changes, run the tests to verify the auth setup works.</div>
+            </details>
+          </div>
+        </div>
+
+        <!-- CP04 -->
+        <div class="checkpoint" id="cp04">
+          <div class="checkpoint-header">
+            <span class="cp-badge">CP 04</span>
+            <h3>Smoke Tests</h3>
+            <span class="checkpoint-meta">6 tests</span>
+          </div>
+          <div class="checkpoint-body">
+            <p>Six critical-path smoke tests: login flow, project creation (wizard), task creation on Kanban board, task editing, comments, and global search navigation.</p>
+            <details>
+              <summary>View prompt →</summary>
+              <div class="prompt-content">I have a Playwright E2E testing project with authentication infrastructure already set up. Now I need smoke tests covering the critical user journeys of the issue tracker app.
+
+### Context
+
+Read these files to understand the app and existing test infrastructure:
+- `docs/APP_SPEC.md` — Full app specification with `data-testid` selectors
+- `docs/TEST_PLAN.md` — Test plan with critical paths identified
+- `tests/helpers/constants.ts` — Test account credentials
+- `tests/helpers/api.ts` — API helpers for creating projects, tasks, comments
+- `tests/helpers/fixtures.ts` — Custom fixtures (`testProject`, `aliceApi`)
+- `playwright.config.ts` — Current Playwright configuration
+
+### Important: Test isolation
+
+Every test must be fully idempotent:
+- Create all data they need — never rely on pre-existing data
+- Clean up after themselves
+- Use unique names with timestamps
+- Use the API helpers for setup/teardown — only use the UI when testing the UI flow itself
+
+### What I need
+
+Create `tests/smoke.spec.ts` with these smoke tests:
+
+1. **Login and view projects** — Log out first, navigate to `/login`, enter Alice's credentials, submit, verify redirect to `/projects`.
+
+2. **Create a project and verify it appears** — Click "Create Project", fill in project name and key, submit, verify the project card appears. Clean up via API.
+
+3. **Create a task on the Kanban board** — Use `testProject` fixture. Navigate to board. Click "+" on "To Do" column. Fill in title, submit. Verify task card appears.
+
+4. **View and edit a task** — Use `testProject`. Create task via API. Navigate to detail. Edit title inline. Change status. Verify changes.
+
+5. **Add a comment to a task** — Use `testProject`. Create task via API. Navigate to detail. Type comment, submit. Verify it appears.
+
+6. **Search for a task and navigate** — Use `testProject`. Create task with distinctive title. Open global search. Type part of title. Verify result appears. Click it. Verify navigation.
+
+### Guidelines
+
+- Import `test` and `expect` from `./helpers/fixtures`
+- Use `data-testid` selectors from APP_SPEC.md
+- For login test, clear cookies first with `page.context().clearCookies()`
+- Use `await expect(...).toBeVisible()` for asserting element presence
+
+After writing the tests, run them to verify they all pass.</div>
+            </details>
+          </div>
+        </div>
+
+        <!-- CP05 -->
+        <div class="checkpoint" id="cp05">
+          <div class="checkpoint-header">
+            <span class="cp-badge">CP 05</span>
+            <h3>Task Lifecycle</h3>
+            <span class="checkpoint-meta">9 tests</span>
+          </div>
+          <div class="checkpoint-body">
+            <p>Comprehensive task testing — create from board, inline title/description editing with save and cancel, status and priority changes, assignee management, due date set/clear, context menu deletion, and list view sorting.</p>
+            <details>
+              <summary>View prompt →</summary>
+              <div class="prompt-content">I have a Playwright E2E testing project with auth infrastructure and smoke tests. Now I need detailed tests for the task lifecycle in the issue tracker app.
+
+### Context
+
+Read these files first:
+- `docs/APP_SPEC.md` — Full app spec with `data-testid` selectors (especially Task Detail, Kanban Board, Task List sections)
+- `tests/helpers/constants.ts` — Test account credentials
+- `tests/helpers/api.ts` — API helpers for creating projects, tasks, etc.
+- `tests/helpers/fixtures.ts` — Custom fixtures (`testProject`, `aliceApi`)
+- `tests/smoke.spec.ts` — Follow the same patterns
+
+### Important: Test isolation
+
+Every test must be idempotent:
+- Create all data via API helpers or the `testProject` fixture
+- Never rely on pre-existing data
+- The `testProject` fixture auto-cleans up (deleting a project removes all its tasks)
+- Use unique names with timestamps
+
+### What I need
+
+Create `tests/tasks.spec.ts` with 9 tests using `testProject` fixture:
+
+1. **Create task from board** — Navigate to board. Click "+" on "To Do". Fill title, submit. Verify task card appears.
+2. **Edit task title inline** — Create task via API. Navigate to detail. Click title, change text, press Enter. Reload and verify.
+3. **Edit task description with save and cancel** — Create task via API. Navigate to detail. Edit description, save, verify. Then edit again, cancel, verify original persists.
+4. **Change task status from detail** — Create task with status "todo". Navigate to detail. Change status to "In Progress". Verify on detail and board.
+5. **Change task priority** — Create task via API. Navigate to detail. Change priority to "high". Verify.
+6. **Change task assignee** — Create task via API. Add Bob as member. Navigate to detail. Change assignee to Bob. Verify.
+7. **Set and clear due date** — Create task via API. Navigate to detail. Set date, verify. Clear date, verify.
+8. **Delete task from board context menu** — Create task via API. Navigate to board. Open context menu. Click Delete. Verify card gone.
+9. **Task list view and sorting** — Create 2-3 tasks via API. Navigate to list view. Verify all appear. Click column header. Verify sort changes.
+
+### Guidelines
+
+- Import `test` and `expect` from `./helpers/fixtures`
+- Use `data-testid` selectors from APP_SPEC.md
+- The API returns task keys as `taskKey` (e.g., "ABCD-1"), not `key`
+- For dropdowns, after clicking trigger, use `getByRole('option', { name: /.../ })`
+
+After writing the tests, run the full suite to verify everything passes.</div>
+            </details>
+          </div>
+        </div>
+
+        <!-- CP06 -->
+        <div class="checkpoint" id="cp06">
+          <div class="checkpoint-header">
+            <span class="cp-badge">CP 06</span>
+            <h3>Comment Tests</h3>
+            <span class="checkpoint-meta">5 tests</span>
+          </div>
+          <div class="checkpoint-body">
+            <p>Comment CRUD operations plus a cross-user permission test using separate browser contexts — verifying that Bob cannot edit or delete Alice's comments.</p>
+            <details>
+              <summary>View prompt →</summary>
+              <div class="prompt-content">I have a Playwright E2E testing project with auth, smoke tests, and task tests. Now I need tests for the comment system.
+
+### Context
+
+Read these files first:
+- `docs/APP_SPEC.md` — Comments section and its `data-testid` selectors
+- `tests/helpers/constants.ts` — Test account credentials (especially Bob's `storageStatePath`)
+- `tests/helpers/api.ts` — API helpers including `addComment` and `addProjectMember`
+- `tests/helpers/fixtures.ts` — Custom fixtures
+- `tests/tasks.spec.ts` — Follow the same patterns
+
+### Important: Test isolation
+
+Every test must be idempotent:
+- Create all data via API helpers or the `testProject` fixture
+- The `testProject` fixture auto-cleans up
+- Use unique text with timestamps
+
+### What I need
+
+Create `tests/comments.spec.ts` with these tests using `testProject` fixture:
+
+1. **Add a comment** — Navigate to task detail. Type in `comment-input`, click `comment-submit-button`. Verify text appears in `comment-thread`.
+
+2. **Edit own comment** — Add comment via API. Navigate to detail. Find comment by text. Click edit button, change text, save. Verify update.
+
+3. **Cancel comment edit** — Add comment via API. Navigate to detail. Start editing, change text, click cancel. Verify original persists.
+
+4. **Delete own comment** — Add comment via API. Navigate to detail. Click delete. Verify comment removed.
+
+5. **Cannot edit or delete another user's comment** — Add Bob as project member. Create task as Alice. Add comment as Alice. Create Bob's browser context with `browser.newContext({ storageState: TEST_ACCOUNTS.bob.storageStatePath })`. Open task in Bob's context. Verify Bob sees Alice's comment but has NO edit/delete buttons. Close Bob's context.
+
+### Guidelines
+
+- Import `test` and `expect` from `./helpers/fixtures`
+- Use `data-testid` selectors from APP_SPEC.md
+- Comment selectors use dynamic IDs — find comments by text content within `comment-thread`, then use relative locators for edit/delete buttons
+- For cross-user test, you need the `browser` fixture
+
+After writing the tests, run the full suite to verify everything passes.</div>
+            </details>
+          </div>
+        </div>
+
+        <!-- CP07 -->
+        <div class="checkpoint" id="cp07">
+          <div class="checkpoint-header">
+            <span class="cp-badge">CP 07</span>
+            <h3>Project Settings</h3>
+            <span class="checkpoint-meta">6 tests</span>
+          </div>
+          <div class="checkpoint-body">
+            <p>Project configuration management — view and edit project details, add and remove members, verify read-only fields, and complete project deletion with confirmation dialog.</p>
+            <details>
+              <summary>View prompt →</summary>
+              <div class="prompt-content">I have a Playwright E2E testing project with auth, smoke, task, and comment tests. Now I need tests for project settings: editing project details, managing members, and deleting a project.
+
+### Context
+
+Read these files first:
+- `docs/APP_SPEC.md` — Project Settings section and its `data-testid` selectors
+- `tests/helpers/api.ts` — API helpers (especially `createProject`, `deleteProject`, `addProjectMember`)
+- `tests/helpers/fixtures.ts` — Custom fixtures (`testProject`, `aliceApi`)
+- `tests/tasks.spec.ts` — Follow the same patterns
+
+### Important: Test isolation
+
+Every test must be idempotent:
+- Create all data via API helpers or the `testProject` fixture
+- The `testProject` fixture auto-cleans up
+- For delete test, create a **separate** project via API (not `testProject`) since the test deletes it
+
+### What I need
+
+Create `tests/project-settings.spec.ts` with these tests:
+
+1. **Settings page shows current project details** — Navigate to settings. Verify `settings-name-input` has project name. Verify `settings-key-input` has key.
+2. **Edit project name and description** — Navigate to settings. Change name and description. Save. Reload. Verify persisted.
+3. **Project key is read-only** — Navigate to settings. Verify `settings-key-input` is disabled.
+4. **Add member to project** — Navigate to settings. Enter Bob's email. Click add. Verify new row appears.
+5. **Remove member from project** — Add Bob via API first. Navigate to settings. Find Bob's row. Click remove. Verify gone.
+6. **Delete project** — Do NOT use `testProject` fixture. Create project via `aliceApi`. Navigate to settings. Click delete. Confirm. Verify redirect to `/projects`.
+
+### Guidelines
+
+- Import `test` and `expect` from `./helpers/fixtures`
+- Use `data-testid` selectors from APP_SPEC.md
+- For delete test, use `aliceApi` fixture directly
+- Member rows use dynamic `member-row-{userId}` selectors — find members by text content
+
+After writing the tests, run the full suite to verify everything passes.</div>
+            </details>
+          </div>
+        </div>
+
+        <!-- CP08 -->
+        <div class="checkpoint" id="cp08">
+          <div class="checkpoint-header">
+            <span class="cp-badge">CP 08</span>
+            <h3>Advanced Scenarios</h3>
+            <span class="checkpoint-meta">6 tests</span>
+          </div>
+          <div class="checkpoint-body">
+            <p>Multi-user admin panel tests (user list, role changes, bulk operations), Kanban board filtering (search, assignee, priority), and user profile management with a throwaway account for password changes.</p>
+            <details>
+              <summary>View prompt →</summary>
+              <div class="prompt-content">I have a Playwright E2E testing project with auth, smoke, task, comment, and project settings tests. Now I need tests for advanced scenarios: admin panel, board filters, and user profile.
+
+### Context
+
+Read these files first:
+- `docs/APP_SPEC.md` — Admin Panel, Kanban Board (filters), User Profile sections and their `data-testid` selectors
+- `tests/helpers/constants.ts` — Test account credentials (admin, alice, bob and their `storageStatePath`)
+- `tests/helpers/api.ts` — API helpers
+- `tests/helpers/fixtures.ts` — Custom fixtures
+- `tests/comments.spec.ts` — See the cross-user test pattern for creating separate browser contexts
+
+### Important: Test isolation
+
+Every test must be idempotent:
+- Create all data via API helpers or fixtures
+- Clean up after itself
+- Use unique names with timestamps
+- For admin role-change tests, **revert the role back** in cleanup
+- For password change tests, use a **freshly registered throwaway account**
+
+### What I need
+
+Create `tests/advanced.spec.ts` with these 6 tests:
+
+#### Admin Panel (3 tests)
+
+Use admin browser context: `browser.newContext({ storageState: TEST_ACCOUNTS.admin.storageStatePath })`
+
+1. **Admin sees user list, non-admin is blocked** — Open `/admin/users` in admin context. Verify admin page visible. Open same URL in Alice's page. Verify Alice is redirected/blocked. Check `sidebar-nav-users` visible for admin, not for Alice. Close admin context.
+
+2. **Admin changes a user's role** — Open admin page. Find non-admin user. Change role via dropdown. Verify change. **Revert role** before cleanup.
+
+3. **Bulk role change with confirmation** — Open admin page. Select 2+ users via checkboxes. Verify `bulk-action-bar` appears. Choose role, confirm in dialog. Verify changes. **Revert roles** before cleanup.
+
+#### Board Filters (1 test)
+
+4. **Board filters: search, assignee, priority, and clear** — Use `testProject`. Create 3 tasks with different titles, assignees, and priorities. Navigate to board. Test each filter type. Click `filter-clear` to verify all tasks visible again.
+
+#### Profile (2 tests)
+
+5. **Edit profile display name** — Navigate to `/profile`. Change name. Save. Reload. Verify persisted. **Revert name**.
+
+6. **Change password with throwaway account** — Register new account via UI. Navigate to `/profile`. Click `security-tab-trigger`. Fill current/new password. Submit. Verify success. No cleanup needed.
+
+### Guidelines
+
+- Import `test` and `expect` from `./helpers/fixtures`
+- Use `data-testid` selectors from APP_SPEC.md
+- For admin tests, use `browser` fixture for separate contexts
+- For bulk role change: find user rows by email content, not by IDs
+
+After writing the tests, run the full suite to verify everything passes.</div>
+            </details>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- AI Exploration -->
+      <section id="ai-exploration">
+        <h2>Exploring Apps with AI + Playwright MCP</h2>
+        <p>AI coding assistants can explore web applications autonomously using browser automation tools. With Playwright MCP (Model Context Protocol), tools like Claude Code, GitHub Copilot, and OpenAI Codex can launch a browser, navigate pages, interact with elements, and take screenshots — just like a QA engineer would during manual exploratory testing.</p>
+        <p>This means you can ask your AI assistant to explore an app before writing a single test. It will discover pages, forms, navigation flows, and interactive elements on its own, then document what it found.</p>
+
+        <div class="info-box">
+          <h3>Example prompt for app exploration</h3>
+          <p style="margin-bottom: 0.75rem;">Copy this into your AI assistant to have it explore any web app:</p>
+        </div>
+<pre><span class="comment"># App exploration prompt</span>
+
+I need you to explore a web application and document everything you find.
+
+<span class="string">App URL: https://issues-demo.devplant.academy</span>
+<span class="string">Login: alice@example.com / password123</span>
+
+Using the browser, please:
+1. Log in with the credentials above
+2. Systematically visit every page and screen you can find
+3. Document all navigation paths, forms, buttons, and interactive elements
+4. Note any `data-testid` attributes you find on elements
+5. Take screenshots of each major screen
+6. Try creating, editing, and deleting data to understand the workflows
+
+Produce a structured document listing:
+- Every route/URL you discovered
+- Key UI elements and their selectors on each page
+- User flows (what leads to what)
+- Any error states or edge cases you noticed</pre>
+        <p class="muted">The AI will launch a browser, navigate through the app, and return a comprehensive map of the application — ready to inform your test plan.</p>
+      </section>
+
+      <!-- Prompt Craft -->
+      <section id="prompt-craft">
+        <h2>Writing Effective Test Prompts</h2>
+        <p>The prompts in this course follow a consistent structure that produces reliable results across different AI assistants. Each prompt includes:</p>
+
+        <div class="info-box">
+          <h3>Context first</h3>
+          <p>Tell the AI which files to read before starting. This grounds it in your existing code, patterns, and conventions.</p>
+        </div>
+
+        <div class="info-box">
+          <h3>Explicit constraints</h3>
+          <p>State requirements like test isolation, cleanup, and unique naming upfront. AI assistants follow explicit rules better than implied ones.</p>
+        </div>
+
+        <div class="info-box">
+          <h3>Numbered test specs</h3>
+          <p>Each test is described with a name, specific steps, and expected outcomes. This prevents the AI from improvising or skipping cases.</p>
+        </div>
+
+        <div class="info-box">
+          <h3>Selector strategy</h3>
+          <p>Reference <code>data-testid</code> selectors by name. The AI will use stable selectors instead of fragile CSS classes or text matching.</p>
+        </div>
+
+        <div class="info-box">
+          <h3>Verify at the end</h3>
+          <p>Always ask the AI to run the tests after writing them. This catches issues in the same conversation where they can be fixed.</p>
+        </div>
+      </section>
+
+      <!-- Test Isolation -->
+      <section id="isolation">
+        <h2>Test Isolation Pattern</h2>
+        <p>Every test in this project is fully idempotent — it creates what it needs and cleans up after itself. This is critical for reliable E2E testing against a shared environment.</p>
+<pre><span class="comment">// The testProject fixture handles this automatically:</span>
+<span class="comment">// 1. Creates a project with a random key before each test</span>
+<span class="comment">// 2. Tests run against that isolated project</span>
+<span class="comment">// 3. Project is deleted after the test (cascading to tasks/comments)</span>
+
+test(<span class="string">'create a task'</span>, async ({ page, testProject }) => {
+  <span class="comment">// testProject is already created, use it</span>
+  await page.goto(`/projects/${testProject.key}/board`);
+  <span class="comment">// ... test logic ...</span>
+  <span class="comment">// cleanup happens automatically when the test ends</span>
+});</pre>
+        <p>For tests that modify shared state (like admin role changes), the prompt explicitly requires reverting changes in cleanup — so the next test run starts from a known state.</p>
+      </section>
+
+      <footer>
+        <p>Built with Playwright + Claude Code — <a href="https://devplant.academy">DevPlant Academy</a></p>
+      </footer>
+
+    </main>
+  </div>
+
+  <script>
+    // Smooth scroll for sidebar links
+    document.querySelectorAll('.sidebar a[href^="#"]').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Highlight active sidebar link on scroll
+    const sections = document.querySelectorAll('[id]');
+    const navLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(link => {
+            link.style.color = link.getAttribute('href') === '#' + entry.target.id ? '#fff' : '';
+            link.style.borderLeftColor = link.getAttribute('href') === '#' + entry.target.id ? '#66bb6a' : 'transparent';
+          });
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+
+    sections.forEach(section => observer.observe(section));
+  </script>
+</body>
+</html>
