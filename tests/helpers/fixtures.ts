@@ -27,8 +27,11 @@ export const test = base.extend<TestFixtures>({
   },
 
   testProject: async ({ aliceApi }, use) => {
-    const suffix = Math.random().toString(36).substring(2, 6).toUpperCase();
-    const key = `T${suffix}`;
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const suffix = Array.from({ length: 4 }, () =>
+      letters[Math.floor(Math.random() * letters.length)]
+    ).join("");
+    const key = suffix;
     const project = await createProject(aliceApi, {
       name: `Test Project ${Date.now()}`,
       key,
